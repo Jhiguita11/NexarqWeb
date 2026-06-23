@@ -1,0 +1,25 @@
+{
+  "name": "nexarq-360",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Sitio web oficial de NEXARQ 360 — soluciones de programación 360 impulsadas por inteligencia artificial.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.2",
+    "three": "^0.184.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.0.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "tailwindcss": "^4.0.0",
+    "vite": "^5.4.8"
+  }
+}

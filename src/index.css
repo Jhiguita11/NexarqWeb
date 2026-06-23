@@ -1,0 +1,339 @@
+@import 'tailwindcss';
+
+/* ============================================================
+   NEXARQ 360 — Sistema de diseño
+   Paleta: Negro · Dorado · Blanco
+   ============================================================ */
+@theme {
+  /* Marca */
+  --color-ink: #0a0a0b;
+  --color-ink-soft: #14141a;
+  --color-ink-700: #1f1f29;
+
+  --color-gold-50: #fbf6e3;
+  --color-gold-100: #f6ebc4;
+  --color-gold-200: #ecd693;
+  --color-gold-300: #e0bd5c;
+  --color-gold-400: #d4af37;
+  --color-gold-500: #c9a227;
+  --color-gold-600: #a9831c;
+  --color-gold-700: #846419;
+
+  --font-display: 'Sora', 'Segoe UI', system-ui, sans-serif;
+  --font-sans: 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif;
+}
+
+/* Las fuentes (Sora + Plus Jakarta Sans) se cargan vía <link> en index.html */
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 17px; /* base un poco mayor para mejor legibilidad */
+  background-color: var(--color-ink);
+  color: #f5f5f4;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Utilidades de marca reutilizables */
+@layer components {
+  .gold-text {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(
+      100deg,
+      #a9831c 0%,
+      #d4af37 25%,
+      #f6ebc4 50%,
+      #d4af37 75%,
+      #a9831c 100%
+    );
+  }
+
+  .gold-gradient {
+    background-image: linear-gradient(
+      100deg,
+      #a9831c 0%,
+      #d4af37 35%,
+      #f6ebc4 50%,
+      #d4af37 65%,
+      #a9831c 100%
+    );
+  }
+
+  .gold-border {
+    border-image: linear-gradient(100deg, #a9831c, #f6ebc4, #a9831c) 1;
+  }
+
+  .container-px {
+    @apply mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-12;
+  }
+}
+
+/* Scrollbar sutil */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-ink);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-ink-700);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gold-700);
+}
+
+/* Animación de entrada reutilizable */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.7s ease-out both;
+}
+
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 22s linear infinite;
+}
+
+/* Brillo dorado animado para títulos (intro) */
+@keyframes gold-shimmer {
+  to {
+    background-position: 200% center;
+  }
+}
+
+.gold-shimmer {
+  background-image: linear-gradient(
+    100deg,
+    #846419 0%,
+    #d4af37 20%,
+    #f6ebc4 40%,
+    #fffdf2 50%,
+    #f6ebc4 60%,
+    #d4af37 80%,
+    #846419 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gold-shimmer 3.5s linear infinite;
+}
+
+/* Dibujado del anillo dorado (intro): la flecha recorre los 360°.
+   El valor 775 debe coincidir con RING_LEN en IntroLockup.jsx.
+   (No usar var() aquí: Chrome no interpola stroke-dashoffset desde una
+   variable CSS y la animación "salta" al estado final.) */
+@keyframes ring-draw {
+  from {
+    stroke-dashoffset: 775;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-ring-draw {
+  animation: ring-draw 1.7s cubic-bezier(0.55, 0, 0.25, 1) forwards;
+}
+
+/* Aparición de la punta de flecha al cerrar el círculo */
+@keyframes arrow-in {
+  0%,
+  70% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-arrow-in {
+  animation: arrow-in 1.7s ease-out forwards;
+}
+
+/* Pulso anular para el botón "Entrar" */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.92);
+    opacity: 0.65;
+  }
+  70% {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 2.2s cubic-bezier(0.25, 0.1, 0.25, 1) infinite;
+}
+
+/* Aparición de la intro */
+@keyframes intro-pop {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-intro-pop {
+  animation: intro-pop 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Dibujado de la flecha dorada: una máscara SVG (un trazo grueso que sigue la
+   línea central de la flecha) se revela con stroke-dashoffset, de la COLA a la
+   PUNTA de forma CONTINUA (sin cortes). pathLength=1000 normaliza la longitud. */
+@keyframes arrow-draw {
+  from {
+    stroke-dashoffset: 1000;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.arrow-draw-path {
+  stroke-dasharray: 1000;
+  animation: arrow-draw 1.9s cubic-bezier(0.45, 0, 0.25, 1) both;
+}
+
+/* Aparición del wordmark blanco: barrido de izquierda a derecha + leve subida */
+@keyframes wordmark-reveal {
+  from {
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+    transform: translateY(0);
+  }
+}
+
+.animate-wordmark-reveal {
+  animation: wordmark-reveal 2s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both;
+}
+
+/* Banner publicitario: deslizado horizontal continuo (marquee) sin costuras.
+   La pista contiene 2 copias; al moverse -50% el bucle es perfecto. */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 32s linear infinite;
+}
+
+.marquee-pause:hover .animate-marquee {
+  animation-play-state: paused;
+}
+
+/* === Hero / panel publicitario === */
+
+/* Barra de progreso del punto activo: se llena en la duración del slide. */
+@keyframes hero-progress {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+/* Ken Burns: la imagen de fondo respira con un zoom/paneo lento. */
+@keyframes hero-kenburns {
+  0% {
+    transform: scale(1.06) translate3d(0, 0, 0);
+  }
+  100% {
+    transform: scale(1.18) translate3d(-2%, -1.5%, 0);
+  }
+}
+
+.hero-kenburns {
+  animation: hero-kenburns 16s ease-in-out infinite alternate;
+}
+
+/* Entrada del contenido del slide activo (fade + subida), escalonada. */
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-rise {
+  animation: hero-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.hero-d1 {
+  animation-delay: 0.12s;
+}
+.hero-d2 {
+  animation-delay: 0.24s;
+}
+
+/* Deck arrastrable: ocultar la barra de scroll */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Accesibilidad: si el usuario pide reducir movimiento, evitamos el scroll
+   animado y los bucles infinitos (pulso/giro), pero conservamos las
+   animaciones de entrada de marca (intro, reparto de cartas) porque son
+   parte central de la experiencia y de corta duración. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-spin-slow,
+  .animate-pulse-ring,
+  .hero-kenburns {
+    animation: none !important;
+  }
+}
