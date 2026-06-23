@@ -14,6 +14,7 @@ export default function DraggableDeck({ children, hint }) {
     offset: 0,
     min: 0,
     max: 0,
+    down: false,
     dragging: false,
     pid: null,
     startX: 0,
@@ -57,7 +58,10 @@ export default function DraggableDeck({ children, hint }) {
   const onPointerDown = (e) => {
     const st = s.current
     cancelAnimationFrame(st.raf)
-    st.dragging = true
+    // No capturamos el puntero todavía: un clic limpio debe llegar a los
+    // enlaces de las tarjetas. Solo arrancamos el arrastre tras superar el umbral.
+    st.down = true
+    st.dragging = false
     st.pid = e.pointerId
     st.startX = e.clientX
     st.startOffset = st.offset
@@ -65,15 +69,22 @@ export default function DraggableDeck({ children, hint }) {
     st.lastT = performance.now()
     st.v = 0
     st.moved = 0
-    e.currentTarget.setPointerCapture?.(e.pointerId)
-    setGrabbing(true)
   }
 
   const onPointerMove = (e) => {
     const st = s.current
-    if (!st.dragging) return
+    if (!st.down) return
     const dx = e.clientX - st.startX
     st.moved = Math.max(st.moved, Math.abs(dx))
+
+    // A partir de 6px de movimiento sí es un arrastre: ahora capturamos.
+    if (!st.dragging) {
+      if (st.moved < 6) return
+      st.dragging = true
+      e.currentTarget.setPointerCapture?.(st.pid)
+      setGrabbing(true)
+    }
+
     st.offset = rubber(st.startOffset + dx)
     apply(st.offset)
 
@@ -120,14 +131,17 @@ export default function DraggableDeck({ children, hint }) {
 
   const endDrag = (e) => {
     const st = s.current
-    if (!st.dragging) return
+    if (!st.down) return
+    st.down = false
+    const wasDragging = st.dragging
     st.dragging = false
     setGrabbing(false)
     if (st.pid != null) {
       e.currentTarget.releasePointerCapture?.(st.pid)
       st.pid = null
     }
-    settle()
+    // Si no llegó a ser arrastre (fue un clic), no hay inercia que aplicar.
+    if (wasDragging) settle()
   }
 
   // Evita que un click después de arrastrar dispare enlaces dentro de las cards.
