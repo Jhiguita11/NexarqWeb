@@ -55,7 +55,7 @@ export default function About() {
 
             {/* B — Stat proyectos */}
             <article className={`${tile} items-center justify-center text-center`}>
-              <div className="font-display text-5xl font-black gold-text">2+</div>
+              <div className="font-display text-5xl font-black gold-text">100+</div>
               <div className="mt-2 text-sm text-white/55">{t.home.statsProjects}</div>
             </article>
 
