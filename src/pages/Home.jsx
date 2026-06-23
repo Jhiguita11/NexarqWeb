@@ -18,13 +18,6 @@ export default function Home() {
   const { t } = useLanguage()
   usePageMeta(null, t.home.heroSubtitle)
 
-  const stats = [
-    { value: '2+', label: t.home.statsProjects },
-    { value: '1', label: t.home.statsClients },
-    { value: 'IA', label: t.home.statsAi },
-    { value: '360°', label: t.home.statsSupport },
-  ]
-
   const services = t.services.items.map((item, i) => ({
     Icon: serviceIconSet[i] ?? serviceIconSet[0],
     ...item,
@@ -40,21 +33,6 @@ export default function Home() {
 
         <div className="container-px">
           <HeroCarousel />
-
-          {/* Stats */}
-          <Reveal>
-            <div className="mx-auto mt-10 grid max-w-3xl grid-cols-2 gap-4 sm:grid-cols-4">
-              {stats.map((s) => (
-                <div
-                  key={s.label}
-                  className="rounded-2xl border border-white/10 bg-ink-soft/60 p-5 text-center backdrop-blur-sm"
-                >
-                  <div className="font-display text-3xl font-extrabold gold-text">{s.value}</div>
-                  <div className="mt-1 text-xs text-white/50">{s.label}</div>
-                </div>
-              ))}
-            </div>
-          </Reveal>
         </div>
       </section>
 

@@ -29,14 +29,22 @@ export default function ProjectCard({ project, showDescription = false }) {
           <span className="absolute inset-5 rounded-full border border-gold-300/20" />
         </div>
 
-        {/* Botón reproducir */}
-        <div className="absolute inset-0 grid place-items-center">
-          <span className="grid h-14 w-14 place-items-center rounded-full border border-gold-300/60 bg-ink/45 backdrop-blur-sm transition duration-300 group-hover:scale-110 group-hover:border-gold-300/90">
-            <svg viewBox="0 0 24 24" className="ml-0.5 h-5 w-5 fill-gold-100">
-              <path d="M8 5v14l11-7z" />
-            </svg>
-          </span>
-        </div>
+        {/* Botón reproducir (abre el recorrido 360) */}
+        {project.url && (
+          <a
+            href={project.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`${t.portfolio.visit}: ${project.name}`}
+            className="absolute inset-0 z-10 grid place-items-center"
+          >
+            <span className="grid h-14 w-14 place-items-center rounded-full border border-gold-300/60 bg-ink/45 backdrop-blur-sm transition duration-300 group-hover:scale-110 group-hover:border-gold-300/90">
+              <svg viewBox="0 0 24 24" className="ml-0.5 h-5 w-5 fill-gold-100">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </span>
+          </a>
+        )}
 
         {/* Categoría (arriba-izq) */}
         <span className="absolute left-4 top-4 rounded-full border border-white/15 bg-ink/55 px-3 py-1 text-[0.65rem] font-medium uppercase tracking-wide text-white/80 backdrop-blur">
@@ -91,13 +99,25 @@ export default function ProjectCard({ project, showDescription = false }) {
           ))}
         </div>
 
-        <Link
-          to="/portafolio"
-          className="mt-5 inline-flex items-center gap-1.5 self-start text-sm font-semibold text-gold-300 transition-all hover:gap-2.5 hover:text-gold-200"
-        >
-          {t.portfolio.visit}
-          <IconArrowRight className="h-4 w-4" />
-        </Link>
+        {project.url ? (
+          <a
+            href={project.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-5 inline-flex items-center gap-1.5 self-start text-sm font-semibold text-gold-300 transition-all hover:gap-2.5 hover:text-gold-200"
+          >
+            {t.portfolio.visit}
+            <IconArrowRight className="h-4 w-4" />
+          </a>
+        ) : (
+          <Link
+            to="/portafolio"
+            className="mt-5 inline-flex items-center gap-1.5 self-start text-sm font-semibold text-gold-300 transition-all hover:gap-2.5 hover:text-gold-200"
+          >
+            {t.portfolio.visit}
+            <IconArrowRight className="h-4 w-4" />
+          </Link>
+        )}
       </div>
     </article>
   )
